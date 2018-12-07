@@ -28,6 +28,8 @@ for addUrl in urlList:
         requesturl = baseUrl + addUrl
         #print(requesturl)
         try:
+            #request data
+            print('데이터 가져오는중')
             getdata = requests.get(requesturl, params=params_str)
         except:
             print('request error')
@@ -35,15 +37,15 @@ for addUrl in urlList:
             soup = BS(getdata.text, 'lxml-xml') 
             #print(soup.prettify)
             okflag = soup.find('resultCode')
+            #validation check
             if okflag.text != '00':
                 print(okflag.text)
                 raise ValueError('okcode is not 00')    
             else:
+                #check page
                 totalCount = int(soup.find('totalCount').text)
                 page = int(totalCount/100) + 1
-                #print(page)
                 for item in soup.find_all('item'):
-                    #print(item)
                     main_row = 1 
                     cell_num = 1
                     for child in item.children:
@@ -52,7 +54,16 @@ for addUrl in urlList:
                             #print(child.contents)
                             #print(column.getDurPrdlstInfoList[child.name])
                             #엑셀 헤드 부분
-                            ws.cell(1,cell_num).value = column.getDurPrdlstInfoList[child.name]
+                            if main_row == 1:
+                                evalue = column.getDurPrdlstInfoList[child.name]
+                                print('print head')
+                            else:
+                                evalue = child.contents
+                                print('print body',main_row)
+
+                            ws.cell(main_row,cell_num).value = evalue 
+                            cell_num+=1
+                    main_row+=1
         except ValueError as error:
             print(error) 
         break
