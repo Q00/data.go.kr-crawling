@@ -1,0 +1,2 @@
+ #-*- coding: utf-8 -*-
+getDurPrdlstInfoList = {'ITEM_SEQ': '품목기준코드', 'ITEM_NAME': '품목명', 'ENTP_NAME': '업체명', 'ITEM_PERMIT_DATE': '허가일자', 'ETC_OTC_CODE': '전문일반', 'CLASS_NO': '분류', 'CHART': '성상', 'BAR_CODE': '표준코드', 'MATERIAL_NAME': '원료성분', 'EE_DOC_ID': '제조방법', 'UD_DOC_ID': '용법용량', 'NB_DOC_ID': '주의사항', 'INSERT_FILE': '첨부문서', 'STORAGE_METHOD': '저장방법', 'VALID_TERM': '유효기간', 'REEXAM_TARGET': '재심사대상', 'REEXAM_DATE': '재심사기간', 'PACK_UNIT': '포장단위', 'EDI_CODE': '보험코드', 'CANCEL_DATE': '취소일자', 'CANCEL_NAME': '상태', 'CHANGE_DATE': '변경일자'}
