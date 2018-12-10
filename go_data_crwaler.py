@@ -21,7 +21,7 @@ baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
 urlList = 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getEfcyDplctInfoList','getOdsnAtentInfoList','getMdctnPdAtentInfoList','getCpctyAtentInfoList','getPwnmTabooInfoList','getSpcifyAgrdeTabooInfoList','getUsjntTabooInfoList'
 
 for addUrl in urlList:
-    
+    print('검색할 url : ',addUrl) 
     #excel open
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -33,14 +33,14 @@ for addUrl in urlList:
     #a~z loop
     for letter in range(ord('a'), ord('z')+1):
         params = {'itemName': chr(letter), 'Servicekey': key, 'numOfRows':100}
-        if urlList != 'getDurPrdlstInfoList':
-            params.update({'typeName' : column.typeName[urlList]})
+        if addUrl != 'getDurPrdlstInfoList':
+            params.update({'typeName' : column.typeName[addUrl]})
         params_str = "&".join("%s=%s" % (k,v) for k,v in params.items())
         requesturl = baseUrl + addUrl
         #print(requesturl)
         try:
             #request data
-            print('데이터 가져오는중')
+            print('데이터 가져오는중 검색한 알파벳 :', chr(letter))
             getdata = requests.get(requesturl, params=params_str)
         except:
             print('request error')
@@ -51,13 +51,11 @@ for addUrl in urlList:
             totalCount = int(soup.find('totalCount').text)
             print('총 개수: ',totalCount)
             page = int(totalCount/100) + 1
-            print('총 페이지: ',page) 
             #cell number parameter
             for i in range(page):
                 params_str2 = params_str
                 params_str2+= '&pageNo='+str(i+1)
                 #request again
-                print(str(i+1)+'페이지 가져오는중')
                 getdata = requests.get(requesturl, params=params_str2)
                 soup = BS(getdata.text,'lxml-xml') 
                 #print(soup.prettify)
@@ -75,8 +73,9 @@ for addUrl in urlList:
                         #헤드 부분
                         if main_row ==1: 
                             for child in item.children:
-                                if child != '\n':
-                                    evalue = column.getDurPrdlstInfoList[child.name]
+                                print(child.name)
+                                if child != '\n' and child.name != 'TYPE_NAME':
+                                    evalue = column.typeList[addUrl][child.name]
                                     ws.cell(main_row,cell_num).value = evalue 
                                     cell_num+=1
                             main_row+=1
@@ -85,7 +84,7 @@ for addUrl in urlList:
                         cell_num =1
 
                         for child in item.children:
-                            if child != '\n':
+                            if child != '\n' and child.name != 'TYPE_NAME':
                                 #print(child.contents)
                                 #print(column.getDurPrdlstInfoList[child.name])
                                 #엑셀 헤드 부분
@@ -94,9 +93,8 @@ for addUrl in urlList:
                                 ws.cell(main_row,cell_num).value = evalue 
                                 cell_num+=1
                         main_row+=1
-                print(str(i+1)+'페이지 완료')
         except ValueError as error:
             print(error) 
-
-    wb.save(column.typeName[urlList]+'.xlsx')
+    print(column.typeName[addUrl]+'파일 완료')
+    wb.save(column.typeName[addUrl]+'.xlsx')
 
