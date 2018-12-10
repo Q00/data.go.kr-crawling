@@ -22,11 +22,19 @@ urlList = 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getEfcyD
 
 for addUrl in urlList:
     
+    #excel open
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    #excel parameter initialize
     main_row = 1 
     cell_num = 1
+
     #a~z loop
     for letter in range(ord('a'), ord('z')+1):
         params = {'itemName': chr(letter), 'Servicekey': key, 'numOfRows':100}
+        if urlList != 'getDurPrdlstInfoList':
+            params.update({'typeName' : column.typeName[urlList]})
         params_str = "&".join("%s=%s" % (k,v) for k,v in params.items())
         requesturl = baseUrl + addUrl
         #print(requesturl)
@@ -89,8 +97,6 @@ for addUrl in urlList:
                 print(str(i+1)+'페이지 완료')
         except ValueError as error:
             print(error) 
-        break
-    break
 
-wb.save('dur.xlsx')
+    wb.save(column.typeName[urlList]+'.xlsx')
 
