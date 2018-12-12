@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 #runtime중 메모리수정
 import gevent.monkey
 gevent.monkey.patch_all()
