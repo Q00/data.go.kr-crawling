@@ -32,7 +32,6 @@ def makeCSV(item):
     global main_row
     main_row+=1
     print(main_row)
-    print(item)
     #global main_row
     #item을 하나씩 받아 csv파일로 무조건 add
     #if main_row ==1: 
@@ -60,9 +59,10 @@ def getData():
                 if link != "":
                     getdata = requests.get(link)
                     soup = BS(getdata.text,'lxml-xml') 
+                    #print(soup.prettify)
                     #validation check
                     okflag = soup.find('resultCode')
-                     
+                    print(okflag) 
                     if okflag.text != '00':
                         print("okflag: ",okflag.text)
                         
@@ -87,7 +87,7 @@ def getData():
                     #print(requesturl)
                     try:
                         #request data
-                        #print('데이터 가져오는중 검색한 알파벳 :', chr(letter))
+                        print('데이터 가져오는중 검색한 알파벳 :', chr(letter))
                         getdata = requests.get(requestUrl, params=params_str)
                     except:
                         print('request error')
@@ -96,20 +96,26 @@ def getData():
                     
                         #print(soup.prettify) 
                         #check page
-                        totalcount = int(soup.find('totalCount').text)
-                        print('총 개수: ',totalcount)
-                        page = int(totalcount/100) + 1
-                        #cell number parameter
-                        print('페이지 : ',page)
-                        for i in range(page):
-                            params_str2 = params_str
-                            params_str2+= '&pageno='+str(i+1)
-                            #request again
-                            queue.put(requestUrl+'?'+params_str2)
-                            #print(requestUrl+params_str2)
+                        try:
+                            totalcount = int(soup.find('totalCount').text)
+                        except:
+                            print('검색결과없음')
+                            totalcount=0
+                        #print('총 개수: ',totalcount)
+                        if totalcount!=0:
+                            page = int(totalcount/100) + 1
+                            #cell number parameter
+                            #print('페이지 : ',page)
+                            for i in range(page):
+                                params_str2 = params_str
+                                params_str2+= '&pageno='+str(i+1)
+                                #request again
+                                queue.put(requestUrl+'?'+params_str2)
+                                #print(requestUrl+params_str2)
              
                     except:
                         print('crwaling error : ',sys.exc_info()[1])
+                break
         except gevent.queue.Empty:
             break
     print('stop crwaling')
