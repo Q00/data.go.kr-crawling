@@ -48,6 +48,8 @@ def makeCSV(item):
 
 def getData():
     #가지고 있는 url만큼만 loop
+     
+    error_log = open('./err.txt',mode='w')
     while not queue.empty():
             #저장되어있는 link를 queue에서 가져옴
             #pool의 worker들이 link로 request 동기보다 n배 빠름
@@ -70,12 +72,17 @@ def getData():
                             pool_excel.map(makeCSV,soup.find_all('item'))
                     
                     except:
-                        #print(soup.prettify)
+                        print(soup)
+                        error_log.write(getdata.content.decode()+'\n')
+                        print('==================================')
+                        print(soup.prettify)
+                        error_log.write('==================================\n')
                         print(link)
+                        error_log.write(link)
 
             #param이 다 추가된 link에 대해서 queue에 저장 getData()의 3번째줄에서 저장되어있는 link가져감
     print('stop crwaling')
-
+    error_log.close()
 
            
 def getLink():
