@@ -18,12 +18,24 @@ def getData(inputString):
     headers = {'Accept':'application/json, text/plain, */*'}
     getdata = requests.post(inputString,headers=headers, data=json.dumps(paramData))
     json_data = json.loads(getdata.text) 
-    for column in range(6,len(json_data['RESULT_RE_LIST']+1):
-        with open('column_auto.py','a') as columnpy:
-            columnpy.write(json_data['RESULT_RE_LIST'])
+    result = json_data['RESULT_RE_LIST'] 
+    with open('column_auto.py','a',encoding='utf-8-sig') as columnpy:
+        import column
+        columnpy.write(column.typeName_reverse[result[8]['paramtrBassValue']]+'=')
+        excel_head = {}
+        for columnIndex in range(6,len(result)):
+            if columnIndex ==8:
+                continue
+            print(result[columnIndex]['paramtrNm'])
+            excel_head[result[columnIndex]['paramtrNm']]=result[columnIndex]['paramtrKorNm']
+            print(result[columnIndex]['paramtrKorNm'])
+        print(str(excel_head))
+        input= json.dumps(excel_head,indent =2)
+        columnpy.write(input)
+            
+
 
  
-    print(getdata.text)
 
 main()
 
