@@ -24,11 +24,9 @@ key = config.go_data_api_key
 #url list 이후에 좀더 일반화해서 편히할 예정
 #해당 부분 csv파일을 만들어 넣었을때 자동으로 파싱할 수 있게  만들 예정
 baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-urlList = 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getEfcyDplctInfoList','getOdsnAtentInfoList','getMdctnPdAtentInfoList','getCpctyAtentInfoList','getPwnmTabooInfoList','getSpcifyAgrdeTabooInfoList','getUsjntTabooInfoList'
 
-main_row=0
 def makeCSV(item):
-    global main_row
+    main_row=0
     main_row+=1
     #global main_row
     #item을 하나씩 받아 csv파일로 무조건 add
@@ -82,12 +80,12 @@ def getData():
     print('stop crwaling')
     error_log.close()
 
-           
+         
 def getLink():
     print('getlink') 
     #param이 다 추가된 link에 대해서 queue에 저장 getData()의 3번째줄에서 저장되어있는 link가져감
     
-    for addUrl in urlList:
+    for addUrl in column.urlList:
         for letter in range(ord('a'), ord('z')+1):
             params = {'itemname': chr(letter), 'servicekey': key, 'numofrows':100}
             if addUrl != 'getdurprdlstinfolist':
@@ -128,19 +126,22 @@ def getLink():
             break
         break
 
-#queue init
-queue.put("")
-pool.spawn(getLink).join()
+def init():
 
-#give worker pool
-print('start crwaling')
-#while not pool.free_count() == 15:
-while not queue.empty() :
-    gevent.sleep(0.5)
-    print(queue.qsize())
-    print(queue.empty())
-    for x in range(0, min(queue.qsize(), pool.free_count())):
-        pool.spawn(getData)
+    #queue init
+    main.queue.put("")
+    main.pool.spawn(getLink).join()
 
-#wait for everything complete
-pool.join()
+    #give worker pool
+    print('start crwaling')
+    #while not pool.free_count() == 15:
+    while not queue.empty() :
+        gevent.sleep(0.5)
+        print(queue.qsize())
+        print(queue.empty())
+        for x in range(0, min(queue.qsize(), pool.free_count())):
+            pool.spawn(getData)
+
+    #wait for everything complete
+    pool.join()
+
