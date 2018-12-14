@@ -49,12 +49,14 @@ def makeCSV(item):
 def getData():
     #가지고 있는 url만큼만 loop
      
-    error_log = open('./err.txt',mode='w')
+    error_log = open('./err.txt',mode='a')
+    error_count = 0
     while not queue.empty():
             #저장되어있는 link를 queue에서 가져옴
             #pool의 worker들이 link로 request 동기보다 n배 빠름
                 link = queue.get(timeout=0)
                 if link != "":
+                    gevent.sleep(0.3)
                     getdata = requests.get(link)
                     soup = BS(getdata.text,'lxml-xml') 
                     #print(soup.prettify)
@@ -72,15 +74,11 @@ def getData():
                             pool_excel.map(makeCSV,soup.find_all('item'))
                     
                     except:
-                        print(soup)
-                        error_log.write(getdata.content.decode()+'\n')
-                        print('==================================')
-                        print(soup.prettify)
+                        error_log.write(link+'\n')
                         error_log.write('==================================\n')
-                        print(link)
-                        error_log.write(link)
+                        error_count+=1
+                        error_log.write(error_count+'\n')
 
-            #param이 다 추가된 link에 대해서 queue에 저장 getData()의 3번째줄에서 저장되어있는 link가져감
     print('stop crwaling')
     error_log.close()
 
@@ -138,7 +136,7 @@ pool.spawn(getLink).join()
 print('start crwaling')
 #while not pool.free_count() == 15:
 while not queue.empty() :
-    gevent.sleep(0.1)
+    gevent.sleep(0.5)
     print(queue.qsize())
     print(queue.empty())
     for x in range(0, min(queue.qsize(), pool.free_count())):
