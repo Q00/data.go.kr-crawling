@@ -12,10 +12,8 @@ typeName = {
 typeName_reverse = dict(zip(typeName.values(),typeName.keys()))
 
 baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-#baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
 urlList = 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getEfcyDplctInfoList','getOdsnAtentInfoList','getMdctnPdAtentInfoList','getCpctyAtentInfoList','getPwnmTabooInfoList','getSpcifyAgrdeTabooInfoList','getUsjntTabooInfoList'
+
+
+#엑셀 헤드 인덱스 크롤링할때 쓰는데이터
+paramData = {"publicDataDetailPk":"uddi:fa2ebf2c-6453-4f9d-bd89-ef8e3c77e19f","paramtrSe":"2","oprtinSeqNo":16752}
