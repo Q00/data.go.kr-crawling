@@ -2,6 +2,7 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 import config
+import column
 import requests
 import pandas as pd
 from lxml import etree
@@ -9,7 +10,7 @@ import gevent.pool
 import gevent.queue
 from bs4 import BeautifulSoup as BS
 import sys
-
+import importlib
 #prepare worker
 #pool : request용 worker ( 전체워커)
 #pool_excel : excel용 worker ( 엑셀 워커)
@@ -25,12 +26,21 @@ main_row=0
 #csv list
 csv_list= []
 
+#init file name
+file_name = sys.argv[0][:-3]
+
 def makeCSV(item):
     global main_row
     global csv_list
     main_row+=1
+    head_list=[]
+    if main_row == 1:
+        fmodule = importlib.import_module(file_name)
+        head_list.append(add (v) for k,v in column.typeList[file_name].items)
+        print(head_list)
         
 def getData():
+    print('getdata')
     #가지고 있는 url만큼만 loop
     global error_count 
     error_log = open('./err.txt',mode='a')
@@ -53,7 +63,6 @@ def getData():
                             #검색잘되면 엑셀 파싱
                             #pool map method vs pool map_async
                             #어떤것이 더 효율이 좋을지 결정필요
-                            print(len(soup.find_all('item')))
                             pool_excel.map(makeCSV,soup.find_all('item'))
                     
                     except:
@@ -72,12 +81,11 @@ def init():
     #queue init
     #main.queue.put("")
     #main.pool.spawn(getLink).join()
-    print(sys.argv[0][:-3])
     #give worker pool
     print('start crwaling')
     #while not pool.free_count() == 15:
     while not queue.empty() :
-        gevent.sleep(0.8)
+        gevent.sleep(0.5)
         for x in range(0, min(queue.qsize(), pool.free_count())):
             pool.spawn(getData)
 

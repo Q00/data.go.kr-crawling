@@ -11,6 +11,9 @@ sys.path.insert(0,'../')
 import async_data_crawler as main
 import column
 
+#main에서 다시 돌아와서 makeCSV 가져옴
+def makeCSV():
+    print('here makeCSV')
 
 def getLink():
     print('getlink') 
@@ -61,7 +64,8 @@ def getLink():
         break
 
 #queue init
-main.queue.put("")
-main.pool.spawn(getLink).join()
+if __name__ == "__main__":
+    main.queue.put("")
+    main.pool.spawn(getLink).join()
 
-main.init()
+    main.init()
