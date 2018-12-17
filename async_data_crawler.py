@@ -21,29 +21,15 @@ queue = gevent.queue.Queue()
 key = config.go_data_api_key
 error_count =0
 main_row=0
-#url list 이후에 좀더 일반화해서 편히할 예정
-#해당 부분 csv파일을 만들어 넣었을때 자동으로 파싱할 수 있게  만들 예정
-baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
+
+#csv list
+csv_list= []
 
 def makeCSV(item):
     global main_row
+    global csv_list
     main_row+=1
-    #global main_row
-    #item을 하나씩 받아 csv파일로 무조건 add
-    #if main_row ==1: 
-    #    for child in item.children:
-    #        print(child.name)
-    #        if child != '\n' and child.name != 'TYPE_NAME':
-    #            evalue = column.typeList[addUrl][child.name]
-                #csv 파일 인덱싱 부분 추가 필요
-
-    #csv 파일 body apeend
-    #for child in item.children:
-    #    if child != '\n' and child.name != 'TYPE_NAME':
-    #        evalue = str(child.text)
-                #csv 파일 apeend 부분 추가 필요
-
-
+        
 def getData():
     #가지고 있는 url만큼만 loop
     global error_count 
@@ -86,7 +72,7 @@ def init():
     #queue init
     #main.queue.put("")
     #main.pool.spawn(getLink).join()
-
+    print(sys.argv[0][:-3])
     #give worker pool
     print('start crwaling')
     #while not pool.free_count() == 15:
