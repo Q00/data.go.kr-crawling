@@ -1,14 +1,15 @@
 #runtime중 메모리수정
 import gevent.monkey
 gevent.monkey.patch_all()
-import column
 import requests
 from lxml import etree
 import gevent.pool
 import gevent.queue
 from bs4 import BeautifulSoup as BS
 import sys
-import async_data_crawl as main
+sys.path.insert(0,'../')
+import async_data_crawler as main
+import column
 
 
 def getLink():
@@ -20,7 +21,7 @@ def getLink():
 
     for addUrl in urlList:
         for letter in range(ord('a'), ord('z')+1):
-            params = {'itemname': chr(letter), 'servicekey': main.key, 'numofrows':100}
+            params = {'itemname': chr(letter), 'servicekey': main.key, 'numOfRows':100}
             if addUrl != 'getdurprdlstinfolist':
                 params.update({'typename' : column.typeName[addUrl]})
             params_str = "&".join("%s=%s" % (k,v) for k,v in params.items())
@@ -50,9 +51,9 @@ def getLink():
                     for i in range(page):
                         params_str2 = params_str
                         params_str2+= '&pageno='+str(i+1)
+                        
                         #request again
                         main.queue.put(requestUrl+'?'+params_str2)
-                        print(requestUrl+params_str2)
      
             except:
                 print('crwaling error : ',sys.exc_info()[1])
