@@ -29,16 +29,6 @@ csv_list= []
 #init file name
 file_name = sys.argv[0][:-3]
 
-def makeCSV(item):
-    global main_row
-    global csv_list
-    main_row+=1
-    head_list=[]
-    if main_row == 1:
-        fmodule = importlib.import_module(file_name)
-        head_list.append(add (v) for k,v in column.typeList[file_name].items)
-        print(head_list)
-        
 def getData():
     print('getdata')
     #가지고 있는 url만큼만 loop
@@ -48,7 +38,7 @@ def getData():
             #저장되어있는 link를 queue에서 가져옴
             #pool의 worker들이 link로 request 동기보다 n배 빠름
                 link = queue.get(timeout=0)
-                if link != "":
+                if link[0] != "":
                     gevent.sleep(0.3)
                     getdata = requests.get(link)
                     soup = BS(getdata.text,'lxml-xml') 
@@ -63,7 +53,9 @@ def getData():
                             #검색잘되면 엑셀 파싱
                             #pool map method vs pool map_async
                             #어떤것이 더 효율이 좋을지 결정필요
-                            pool_excel.map(makeCSV,soup.find_all('item'))
+                            
+                            fmodule = importlib.import_module(file_name)
+                            pool_excel.map(fmodule.makeCSV,soup.find_all('item'))
                     
                     except:
                         error_log.write(link+'\n')
