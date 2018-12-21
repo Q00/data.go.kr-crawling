@@ -29,6 +29,17 @@ csv_list= []
 #init file name
 file_name = sys.argv[0][:-3]
 
+def makeCSV(args):
+    print(args)
+    global main_row
+    main_row+=1
+    head_list=[]
+    #if main_row == 1:
+    #    head_list.append(add (v) for k,v in column.typeList[file_name].items)
+    #    print(head_list)
+    #    print('here makeCSV')
+
+
 def getData():
     print('getdata')
     #가지고 있는 url만큼만 loop
@@ -40,7 +51,7 @@ def getData():
                 link = queue.get(timeout=0)
                 if link[0] != "":
                     gevent.sleep(0.3)
-                    getdata = requests.get(link)
+                    getdata = requests.get(link[0])
                     soup = BS(getdata.text,'lxml-xml') 
                     #validation check
                     okflag = soup.find('resultCode')
@@ -53,12 +64,14 @@ def getData():
                             #검색잘되면 엑셀 파싱
                             #pool map method vs pool map_async
                             #어떤것이 더 효율이 좋을지 결정필요
+                            args= []
                             
-                            fmodule = importlib.import_module(file_name)
-                            pool_excel.map(fmodule.makeCSV,soup.find_all('item'))
+                            args.append(soup.find_all('item'))
+                            args.append(link[1])
+                            pool_excel.map(makeCSV,args)
                     
                     except:
-                        error_log.write(link+'\n')
+                        error_log.write(link[0]+'\n')
                         error_log.write('==================================\n')
                         error_count+=1
                         error_log.write(str(error_count)+'\n')
