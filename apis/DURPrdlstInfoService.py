@@ -13,7 +13,12 @@ import column
 
 #main에서 다시 돌아와서 makeCSV 가져옴
 def makeCSV():
-    print('here makeCSV')
+    main_row+=1
+    head_list=[]
+    if main_row == 1:
+        head_list.append(add (v) for k,v in column.typeList[file_name].items)
+        print(head_list)
+        print('here makeCSV')
 
 def getLink():
     print('getlink') 
@@ -24,10 +29,12 @@ def getLink():
 
     for addUrl in urlList:
         for letter in range(ord('a'), ord('z')+1):
+            #key는 config.py 있는 변수, async_data_crwaler에서 가져옴, key와 numofrows는 필수
             params = {'itemname': chr(letter), 'servicekey': main.key, 'numOfRows':100}
             if addUrl != 'getdurprdlstinfolist':
-                params.update({'typename' : column.typeName[addUrl]})
-            params_str = "&".join("%s=%s" % (k,v) for k,v in params.items())
+                params.update({'typename' : column.typeName[addUrl]}) 
+            #Dictionary data -> url get string으로 바꿔줌
+            params_str = "&".join("%s=%s" % (k,v) for k,v in params.items()) 
             requestUrl = baseUrl + addUrl
             #print(requesturl)
             try:
@@ -37,26 +44,34 @@ def getLink():
             except:
                 print('request error')
             try:
+                #response data xml 로 파싱
                 soup = BS(getdata.text, 'lxml-xml') 
             
                 #print(soup.prettify) 
                 #check page
                 try:
+                    #totalcount 파악
                     totalcount = int(soup.find('totalCount').text)
                 except:
                     print('검색결과없음')
                     totalcount=0
                 #print('총 개수: ',totalcount)
                 if totalcount!=0:
+                    #page 계산
                     page = int(totalcount/100) + 1
-                    #cell number parameter
-                    #print('페이지 : ',page)
+                    #page 별로 루프
                     for i in range(page):
                         params_str2 = params_str
+                        #request 파라미터에 pageno 추가
                         params_str2+= '&pageno='+str(i+1)
                         
-                        #request again
-                        main.queue.put(requestUrl+'?'+params_str2)
+                        flist = []
+                        furl = requestUrl+'?'+params_str2
+                        flist.append(furl)
+                        flist.append(addUrl)
+
+                        #queue 에 저장
+                        main.queue.put(flist)
      
             except:
                 print('crwaling error : ',sys.exc_info()[1])
