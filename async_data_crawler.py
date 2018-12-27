@@ -24,58 +24,61 @@ error_count =0
 main_row=0
 
 #csv list
-csv_list= []
+excel_file_name=''
 
 #init file name
 file_name = sys.argv[0][:-3]
 
-def makeCSV(args):
-    print(args)
+def makeROW(item, name):
+    
     global main_row
+    global excel_file_name
+    global df_xml
+    try:
+        if excel_file_name != name:
+            excel_file_name = name
+            print('엑셀파일 바꿈')
+            dfcols = list(column.typeList[name].keys())
+            df_xml = pd.DataFrame(columns=dfcols)
+            print('here')
+        else:
+            print(df_xml)
+    except:
+        raise ValueError('FAIL MULTI PROCESSING') 
     main_row+=1
-    head_list=[]
-    #if main_row == 1:
-    #    head_list.append(add (v) for k,v in column.typeList[file_name].items)
-    #    print(head_list)
-    #    print('here makeCSV')
 
-
+    
 def getData():
-    print('getdata')
     #가지고 있는 url만큼만 loop
     global error_count 
     error_log = open('./err.txt',mode='a')
     while not queue.empty():
-            #저장되어있는 link를 queue에서 가져옴
-            #pool의 worker들이 link로 request 동기보다 n배 빠름
-                link = queue.get(timeout=0)
-                if link[0] != "":
-                    gevent.sleep(0.3)
-                    getdata = requests.get(link[0])
-                    soup = BS(getdata.text,'lxml-xml') 
-                    #validation check
-                    okflag = soup.find('resultCode')
-                    try:
-                        if okflag.text != '00':
-                            print("okflag: ",okflag.text)
-                            
-                            raise ValueError('okcode is not 00')    
-                        else:
-                            #검색잘되면 엑셀 파싱
-                            #pool map method vs pool map_async
-                            #어떤것이 더 효율이 좋을지 결정필요
-                            args= []
-                            
-                            args.append(soup.find_all('item'))
-                            args.append(link[1])
-                            pool_excel.map(makeCSV,args)
-                    
-                    except:
-                        error_log.write(link[0]+'\n')
-                        error_log.write('==================================\n')
-                        error_count+=1
-                        error_log.write(str(error_count)+'\n')
-                        queue.put(link)
+        #저장되어있는 link를 queue에서 가져옴
+        #pool의 worker들이 link로 request 동기보다 n배 빠름
+            link = queue.get(timeout=0)
+            if link[0] != "":
+                getdata = requests.get(link[0])
+                soup = BS(getdata.text,'lxml-xml') 
+                #validation check
+                okflag = soup.find('resultCode')
+                try:
+                    if okflag.text != '00':
+                        print("okflag: ",okflag.text)
+                        
+                        raise ValueError('okcode is not 00')    
+                    else:
+                        #검색잘되면 엑셀 파싱
+                        #pool map method vs pool map_async
+                        #어떤것이 더 효율이 좋을지 결정필요
+                        item_list = soup.find_all('item')
+                        pool_excel.map([makeROW(item, link[1]) for item in item_list])
+                        print('go row')
+                except:
+                    error_log.write(link[0]+'\n')
+                    error_log.write('==================================\n')
+                    error_count+=1
+                    error_log.write(str(error_count)+'\n')
+                    queue.put(link)
 
     print('stop crwaling')
     print(main_row)
