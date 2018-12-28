@@ -29,20 +29,39 @@ excel_file_name=''
 #init file name
 file_name = sys.argv[0][:-3]
 
+df_xml = None
 def makeROW(item, name):
     
     global main_row
     global excel_file_name
     global df_xml
     try:
+        
+        print('makeROW')
         if excel_file_name != name:
+            if excel_file_name:
+                df_xml.to_csv(excel_file_name+'.csv',mode='w')
             excel_file_name = name
-            print('엑셀파일 바꿈')
-            dfcols = list(column.typeList[name].keys())
-            df_xml = pd.DataFrame(columns=dfcols)
             print('here')
+            dfcols = list(column.typeList[name].keys())
+            print(item.find(api_column).text for api_column in dfcols)
+            print(dfcols)
+            #dataframe init
+            df_xml = pd.DataFrame(columns=dfcols)
+            print('here1')
+            dx_xml = df_xml.append(
+                    pd.Series([item.find(api_column).text for api_column in dfcols], index = dfcols),
+                    ignore_index=True)
+            
+            print('here2')
         else:
+            print('else1')
+            print(item.find(api_column).text for api_column in dfcols)
             print(df_xml)
+            dx_xml = df_xml.append(
+                    pd.Series([item.find(api_column).text for api_column in dfcols], index = dfcols),
+                    ignore_index=True)
+            
     except:
         raise ValueError('FAIL MULTI PROCESSING') 
     main_row+=1
