@@ -37,30 +37,26 @@ def makeROW(item, name):
     global df_xml
     try:
         
-        print('makeROW')
+        #print('makeROW')
+        #csv index
+        dfcols_eng = list(column.typeList[name].keys())
+        dfcols = list(column.typeList[name].values())
         if excel_file_name != name:
+            print('init row')
             if excel_file_name:
+                print('make csv')
                 df_xml.to_csv(excel_file_name+'.csv',mode='w')
             excel_file_name = name
-            print('here')
-            dfcols = list(column.typeList[name].keys())
-            print(item.find(api_column).text for api_column in dfcols)
-            print(dfcols)
             #dataframe init
             df_xml = pd.DataFrame(columns=dfcols)
-            print('here1')
-            dx_xml = df_xml.append(
-                    pd.Series([item.find(api_column).text for api_column in dfcols], index = dfcols),
-                    ignore_index=True)
-            
-            print('here2')
+            #append
+            row_df_xml = pd.DataFrame([[item.find(api_column).text for api_column in dfcols_eng]],columns=dfcols)
+            pd.concat([df_xml,row_df_xml])
         else:
-            print('else1')
-            print(item.find(api_column).text for api_column in dfcols)
-            print(df_xml)
-            dx_xml = df_xml.append(
-                    pd.Series([item.find(api_column).text for api_column in dfcols], index = dfcols),
-                    ignore_index=True)
+            print('else')
+            row_df_xml = pd.DataFrame([[item.find(api_column).text for api_column in dfcols_eng]],columns=dfcols)
+            pd.concat([df_xml,row_df_xml])
+
             
     except:
         raise ValueError('FAIL MULTI PROCESSING') 
