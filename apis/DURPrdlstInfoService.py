@@ -60,7 +60,6 @@ def getLink():
                         furl = requestUrl+'?'+params_str2
                         flist.append(furl)
                         flist.append(addUrl)
-
                         #queue 에 저장
                         main.queue.put(flist)
      
@@ -71,8 +70,6 @@ def getLink():
 
 #queue init
 if __name__ == "__main__":
-    link= ["",""]
-    main.queue.put(link)
     main.pool.spawn(getLink).join()
 
     main.init()
