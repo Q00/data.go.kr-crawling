@@ -18,7 +18,7 @@ import sys
 #pool : request용 worker ( 전체워커)
 #pool_excel : excel용 worker ( 엑셀 워커)
 pool = gevent.pool.Pool(15)
-pool_excel = gevent.pool.Pool(15)
+pool_excel = gevent.pool.Pool(5)
 pool_conn = gevent.pool.Pool(15)
 queue = gevent.queue.Queue()
 sem = BoundedSemaphore(1)
