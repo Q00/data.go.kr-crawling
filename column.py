@@ -41,6 +41,7 @@ typeName_reverse = dict(zip(typeName.values(),typeName.keys()))
 
 typeList= {
     "getEfcyDplctInfoList":{
+      "TYPE_NAME": "타입유형",
       "DUR_SEQ": "DUR\uc77c\ub828\ubc88\ud638",
       "EFFECT_NAME": "\ud6a8\ub2a5",
       "INGR_CODE": "DUR\uc131\ubd84\ucf54\ub4dc",
@@ -127,6 +128,7 @@ typeList= {
             'CANCEL_NAME': '상태',
             'CHANGE_DATE': '변경일자'},
         'getSeobangjeongPartitnAtentInfoList' : {
+            'TYPE_NAME': '타입 유형',
             'ITEM_SEQ': '품목기준코드',
             'ITEM_NAME': '품목명',
             'ITEM_PERMIT_DATE': '품목허가일자',
@@ -142,6 +144,7 @@ typeList= {
             'REMARK': '비고',
             'CHANGE_DATE': '변경일자'},
         'getOdsnAtentInfoList' : {
+            'TYPE_NAME': '타입유형',
             'MIX_TYPE': '단일/복합구분',
             'INGR_CODE': 'DUR성분코드',
             'INGR_ENG_NAME': 'DUR성분(영문)',
@@ -163,6 +166,7 @@ typeList= {
             'INGR_ENG_NAME_FULL': 'DUR성분상세명',
             'CHANGE_DATE': '변경일자'},
         'getMdctnPdAtentInfoList' : {
+            'TYPE_NAME': '타입유형',
             'MIX_TYPE': '단일/복합구분',
             'INGR_CODE': 'DUR성분코드',
             'INGR_ENG_NAME': 'DUR성분(영문)',
@@ -184,6 +188,7 @@ typeList= {
             'INGR_ENG_NAME_FULL': 'DUR성분상세명',
             'CHANGE_DATE': '변경일자'},
         'getCpctyAtentInfoList' : {
+            'TYPE_NAME': '타입 유형',
             'MIX_TYPE': '단일/복합구분',
             'INGR_CODE': 'DUR성분코드',
             'INGR_ENG_NAME': 'DUR성분(영문)',
@@ -205,6 +210,7 @@ typeList= {
             'INGR_ENG_NAME_FULL': 'DUR성분상세명',
             'CHANGE_DATE': '변경일자'},
         'getPwnmTabooInfoList' : {
+            'TYPE_NAME': '타입유형',
             'MIX_TYPE': '단일/복합구분',
             'INGR_CODE': 'DUR성분코드',
             'INGR_ENG_NAME': 'DUR성분(영문)',
@@ -226,6 +232,7 @@ typeList= {
             'INGR_ENG_NAME_FULL': 'DUR성분상세명',
             'CHANGE_DATE': '변경일자'},
         'getSpcifyAgrdeTabooInfoList' : {
+            'TYPE_NAME': '타입유형',
             'MIX_TYPE': '단일/복합구분',
             'INGR_CODE': 'DUR성분코드',
             'INGR_ENG_NAME': 'DUR성분(영문)',
@@ -247,6 +254,7 @@ typeList= {
             'INGR_ENG_NAME_FULL': 'DUR성분상세명',
             'CHANGE_DATE': '변경일자'},
         'getUsjntTabooInfoList' : {
+            'TYPE_NAME': '타입유형',
             'DUR_SEQ': 'DUR일련번호',
             'TYPE_CODE': 'DUR유형코드',
             'MIX': '단일/복합',
