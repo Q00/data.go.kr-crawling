@@ -14,6 +14,7 @@ import gevent.pool
 import gevent.queue
 from bs4 import BeautifulSoup as BS
 import sys
+import os
 #prepare worker
 #pool : request용 worker ( 전체워커)
 #pool_excel : excel용 worker ( 엑셀 워커)
@@ -31,6 +32,14 @@ error_count =0
 #csv list
 excel_file_name=''
 result_list= None
+
+#init file name 
+file_name = sys.argv[0][:-3]
+try:
+    os.makedirs(file_name+'_error_log')
+except OSError as exc:
+    if os.path.isdir(file_name+'_error_log'):
+        pass
 
 def multi_wrapper(args):
     return make_row(*args)
@@ -60,7 +69,7 @@ def make_row(item, name):
 
 def connect_api(seperate, name):
     global error_count 
-    error_log = open(f'./{name}_err.txt',mode='a')
+    error_log = open(f'./{file_name}_error_log/{name}_err.txt',mode='a')
     try:
         getdata = requests.get(seperate)
         soup = BS(getdata.text,'lxml-xml') 
