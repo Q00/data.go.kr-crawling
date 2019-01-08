@@ -125,9 +125,7 @@ def getData():
                     df_total.to_csv('csv/'+column.typeName[excel_file_name]+'.csv',mode='a',encoding='ms949', index=False)
                     result_list = None
                 print('finish=============================================================================')
-                excel_file_name = link[0]
-            else:
-                excel_file_name = link[0]
+            excel_file_name = link[0]
         print('connect api')
         item_list = pool_conn.map(multi_wrapper_conn, [(url,link[0]) for url in link[1]])
         print('add excel row')
