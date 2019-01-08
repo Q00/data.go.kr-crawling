@@ -21,9 +21,9 @@ def getLink():
     for addUrl in urlList:
         for letter in range(ord('a'), ord('z')+1):
             #key는 config.py 있는 변수, async_data_crwaler에서 가져옴, key와 numofrows는 필수
-            params = {'itemname': chr(letter), 'servicekey': main.key, 'numOfRows':100}
+            params = {'itemName': chr(letter), 'servicekey': main.key, 'numOfRows':100}
             if addUrl != 'getdurprdlstinfolist':
-                params.update({'typename' : column.typeName[addUrl]}) 
+                params.update({'typeName' : column.typeName[addUrl]}) 
             #Dictionary data -> url get string으로 바꿔줌
             params_str = "&".join("%s=%s" % (k,v) for k,v in params.items()) 
             requestUrl = baseUrl + addUrl
@@ -45,34 +45,33 @@ def getLink():
                     totalcount = int(soup.find('totalCount').text)
                 except:
                     print('검색결과없음')
-                    totalcount=0
+                    totalcount=100
                 #print('총 개수: ',totalcount)
                 if totalcount!=0:
                     #page 계산
                     page = int(totalcount/100) + 1
+                    flist = []
+                    flist.append(addUrl)
+                    furl = []
                     #page 별로 루프
                     for i in range(page):
                         params_str2 = params_str
                         #request 파라미터에 pageno 추가
-                        params_str2+= '&pageno='+str(i+1)
+                        params_str2+= '&pageNo='+str(i+1)
                         
-                        flist = []
-                        furl = requestUrl+'?'+params_str2
-                        flist.append(furl)
-                        flist.append(addUrl)
-
-                        #queue 에 저장
-                        main.queue.put(flist)
+                        furl.append(requestUrl+'?'+params_str2)
      
+                    flist.append(addUrl)
+                    #queue 에 저장
+                    main.queue.put(flist)
             except:
                 print('crwaling error : ',sys.exc_info()[1])
-            break
-        break
+    #        if chr(letter) == 'b':
+    #            break
+    #    break
 
 #queue init
 if __name__ == "__main__":
-    link= ["",""]
-    main.queue.put(link)
     main.pool.spawn(getLink).join()
 
     main.init()
