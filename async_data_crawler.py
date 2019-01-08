@@ -113,6 +113,8 @@ def getData():
         #저장되어있는 link를 queue에서 가져옴
         #pool의 worker들이 link로 request 동기보다 n배 빠름
         link = queue.get(timeout=0)
+        print('connect api')
+        item_list = pool_conn.map(multi_wrapper_conn, [(url,link[0]) for url in link[1]])
         sem.acquire() 
         if excel_file_name != link[0]:
             print('엑셀파일 네임 :',excel_file_name)
@@ -126,8 +128,6 @@ def getData():
                     result_list = None
                 print('finish=============================================================================')
             excel_file_name = link[0]
-        print('connect api')
-        item_list = pool_conn.map(multi_wrapper_conn, [(url,excel_file_name) for url in link[1]])
         print('add excel row')
         datas = pool_excel.map(multi_wrapper,[(item, excel_file_name) for item in item_list if item is not None])
         #data return 
