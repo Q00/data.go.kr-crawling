@@ -127,7 +127,7 @@ def getData():
                 print('finish=============================================================================')
             excel_file_name = link[0]
         print('connect api')
-        item_list = pool_conn.map(multi_wrapper_conn, [(url,link[0]) for url in link[1]])
+        item_list = pool_conn.map(multi_wrapper_conn, [(url,excel_file_name) for url in link[1]])
         print('add excel row')
         datas = pool_excel.map(multi_wrapper,[(item, excel_file_name) for item in item_list if item is not None])
         #data return 
@@ -139,18 +139,24 @@ def getData():
         sem.release()
     else:
         print('queue empty')
-
+         
+        if result_list is not None:
+            print('make last csv')
+            df_total = result_list 
+            df_total.to_csv('csv/'+column.typeName[excel_file_name]+'.csv',mode='a',encoding='ms949', index=False)
+            result_list=None
     print('stop crwaling')
 
 def init():
 
     #give worker pool
     print('start crwaling')
-    while not queue.empty() and pool.free_count() == 15 :
+    while not (queue.empty() and pool.free_count()) == 15 :
         gevent.sleep(0.5)
         for x in range(0, min(queue.qsize(), pool.free_count())):
             print('worker is going to work qsize ', queue.qsize())
             pool.spawn(getData)
+    #make last csv 
+    pool.spawn(getData)
     #wait for everything complete
     pool.join()
-
