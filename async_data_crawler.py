@@ -41,6 +41,12 @@ except OSError as exc:
     if os.path.isdir(file_name+'_error_log'):
         pass
 
+try:
+    os.makedirs('csv')
+except OSError as exc:
+    if os.path.isdir('csv'):
+        pass
+
 def multi_wrapper(args):
     return make_row(*args)
 
