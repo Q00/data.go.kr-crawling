@@ -230,7 +230,7 @@ typeList= {
             'PROHBT_CONTENT': '금기내용',
             'REMARK': '비고',
             'INGR_ENG_NAME_FULL': 'DUR성분상세명'
-            }
+            },
         'getSpcifyAgrdeTabooInfoList' : {
             'TYPE_NAME': '타입유형',
             'MIX_TYPE': '단일/복합구분',
