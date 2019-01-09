@@ -70,20 +70,23 @@ def make_row(item, name):
 def connect_api(seperate, name):
     global error_count 
     error_log = open(f'./{file_name}_error_log/{name}_err.txt',mode='a')
+    getdata = requests.get(seperate)
     try:
-        getdata = requests.get(seperate)
         soup = BS(getdata.text,'lxml-xml') 
         okflag = soup.find('resultCode')
         while okflag is None:
-            print('internal 500 error fuc')
-            gevent.sleep(0.6)
-            getdata = requests.get(seperate)
-            soup = BS(getdata.text,'lxml-xml') 
-            okflag = soup.find('resultCode')
-            error_log.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
-            error_log.write('stuck while')
-            error_log(soup.prettify)
-            error_log.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
+            try:
+                print('internal 500 error fuc')
+                gevent.sleep(0.6)
+                getdata = requests.get(seperate)
+                soup = BS(getdata.text,'lxml-xml') 
+                okflag = soup.find('resultCode')
+                error_log.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
+                error_log.write('stuck while')
+                error_log.write(soup.prettify)
+                error_log.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
+            except:
+                pass
 
         if okflag.text != '00':
             print("okflag: ",okflag.text)
