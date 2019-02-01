@@ -61,9 +61,9 @@ def make_row(item, name):
         row_df_xml = None 
         for idx,sitem in enumerate(item):
             if idx ==0 :
-                row_df_xml = pd.DataFrame([[sitem.find(api_column).text for api_column in dfcols_eng]],columns=dfcols)
+                row_df_xml = pd.DataFrame([[sitem.find(api_column).text for api_column in dfcols_eng if sitem.find(api_column)]],columns=dfcols)
                 continue
-            add_df = pd.DataFrame([[sitem.find(api_column).text for api_column in dfcols_eng]],columns=dfcols)
+            add_df = pd.DataFrame([[sitem.find(api_column).text for api_column in dfcols_eng if sitem.find(api_column)]],columns=dfcols)
 
             row_df_xml = pd.concat([row_df_xml,add_df], sort=False)
             
