@@ -65,7 +65,7 @@ def make_row(item, name):
                 continue
             add_df = pd.DataFrame([[sitem.find(api_column).text for api_column in dfcols_eng if sitem.find(api_column)]],columns=dfcols)
 
-            row_df_xml = pd.concat([row_df_xml,add_df], sort=False)
+            row_df_xml = pd.concat([row_df_xml,add_df], axis=0,sort=False)
             
         return row_df_xml
     except Exception as e:
