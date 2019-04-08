@@ -148,5 +148,7 @@ config.py
 crwaling_go
 
 #ignore csv
-apis/csv
+apis/csv/
 # End of https://www.gitignore.io/api/vim,python
+*.txt
+!requirments.txt

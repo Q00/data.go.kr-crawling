@@ -14,7 +14,8 @@ import column
 def getLink():
 
     baseUrl = 'http://apis.data.go.kr/1470000/DURPrdlstInfoService/'
-    urlList = 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getEfcyDplctInfoList'
+    urlList = 'getEfcyDplctInfoList', 'getDurPrdlstInfoList','getSeobangjeongPartitnAtentInfoList','getOdsnAtentInfoList', 'getMdctnPdAtentInfoList','getCpctyAtentInfoList',
+   # 'getPwnmTabooInfoList','getSpcifyAgrdeTabooInfoList','getUsjntTabooInfoList',
 
     for addUrl in urlList:
         #if addUrl == 'finish':
@@ -24,12 +25,17 @@ def getLink():
         #    break
         #key는 config.py 있는 변수, async_data_crwaler에서 가져옴, key와 numofrows는 필수
         params = {'servicekey': main.key, 'numOfRows':100}
-        if addUrl != 'getdurprdlstinfolist':
-            params.update({'typeName' : column.typeName[addUrl]}) 
+        print('ㅡㅡㅡㅡㅡㅡaddUrl 입니다. : ', addUrl)
+
+        if addUrl != 'getDurPrdlstInfoList':
+            params.update({'typeName' : column.typeName[addUrl]})
+            print('ㅡㅡㅡㅡㅡif문 안에 파라미터', params)
+
+
+        print('ㅡㅡㅡㅡㅡㅡif문 밖에 파라미터', params)
         #Dictionary data -> url get string으로 바꿔줌
-        params_str = "&".join("%s=%s" % (k,v) for k,v in params.items()) 
+        params_str = "&".join("%s=%s" % (k,v) for k,v in params.items())
         requestUrl = baseUrl + addUrl
-        #print(requesturl)
         try:
             #request data
             getdata = requests.get(requestUrl, params=params_str)
@@ -52,18 +58,22 @@ def getLink():
                 page = int(totalcount/100)+1
                 flist=[]
                 flist.append(addUrl)
+
                 furl = []
-                for i in range(page):
+                for i in range(10):
                     params_str2 = params_str
                     #request 파라미터에 pageno 추가
                     params_str2+= '&pageNo='+str(i+1)
                    
                     furl.append(requestUrl+'?'+params_str2)
                 flist.append(furl)
+                #('flist를 뽑아보겠어요~~~~~~~~~~~', flist)
                 #queue 에 저장
                 main.queue.put(flist)
         except:
             print('crwaling error : ',sys.exc_info()[1])
+
+
 #queue init
 if __name__ == "__main__":
     main.pool.spawn(getLink).join()
